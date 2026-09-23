@@ -1,0 +1,64 @@
+<mvc:View
+    controllerName="project1.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+
+    <Page title="Dashboard CPI">
+
+        <content>
+<VBox
+    alignItems="Center"
+    justifyContent="Center"
+    width="100%"
+    class="sapUiLargeMargin">
+
+    <VBox
+        width="25rem"
+        alignItems="Start">
+
+        <Title
+            text="Indicadores"
+            level="H3" />
+
+        <Text
+            text="🔴 Erros: {dashboard>/totalErros}"
+            class="sapUiSmallMarginTop" />
+
+        <Text
+            text="📦 Pacotes Monitorados: {dashboard>/totalPacotes}"
+            class="sapUiSmallMarginTop" />
+
+        <Text
+            text="🔄 IFlows Monitorados: {dashboard>/totalIflows}"
+            class="sapUiSmallMarginTop" />
+
+        <Panel
+            headerText="Últimos IFlows com Erro"
+            width="100%"
+            class="sapUiMediumMarginTop">
+
+            <List items="{ultimos>/erros}">
+
+                <StandardListItem
+                    title="{ultimos>iflow}" />
+
+            </List>
+
+        </Panel>
+
+        <Button
+            text="Abrir Monitor"
+            type="Emphasized"
+            width="100%"
+            class="sapUiMediumMarginTop"
+            press=".onAbrirMonitor" />
+
+    </VBox>
+
+</VBox>
+
+        </content>
+
+    </Page>
+
+</mvc:View>

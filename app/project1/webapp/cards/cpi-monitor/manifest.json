@@ -1,0 +1,33 @@
+{
+  "sap.app": {
+    "id": "cpi.monitor.card",
+    "type": "card"
+  },
+  "sap.card": {
+    "type": "List",
+    "header": {
+      "title": "CPI Monitor",
+      "subTitle": "Últimos IFlows"
+    },
+    "content": {
+      "data": {
+        "json": {
+          "items": [
+            {
+              "iflow": "EnvioFinanceiro"
+            },
+            {
+              "iflow": "ConsultaClientes"
+            },
+            {
+              "iflow": "FechamentoFolha"
+            }
+          ]
+        }
+      },
+      "item": {
+        "title": "{iflow}"
+      }
+    }
+  }
+}

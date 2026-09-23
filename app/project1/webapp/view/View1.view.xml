@@ -1,0 +1,251 @@
+<mvc:View
+    controllerName="project1.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
+
+    <Page
+        title="Monitor de Integrações CPI"
+        enableScrolling="true">
+
+        <content>
+
+            <VBox
+                width="100%"
+                class="sapUiMediumMargin">
+
+                <!-- GRÁFICO -->
+
+                <Panel
+                    headerText="Erros por Pacote"
+                    class="sapUiMediumMarginBottom">
+
+                    <viz:VizFrame
+    id="idVizFrame"
+    width="100%"
+    height="140px"
+    vizType="bar">
+
+                        <viz:dataset>
+
+                            <viz.data:FlattenedDataset
+                                data="{chart>/data}">
+
+                                <viz.data:dimensions>
+
+                                    <viz.data:DimensionDefinition
+                                        name="Pacote"
+                                        value="{chart>pacote}" />
+
+                                </viz.data:dimensions>
+
+                                <viz.data:measures>
+
+                                    <viz.data:MeasureDefinition
+                                        name="Total"
+                                        value="{chart>total}" />
+
+                                </viz.data:measures>
+
+                            </viz.data:FlattenedDataset>
+
+                        </viz:dataset>
+
+                        <viz:feeds>
+
+                            <viz.feeds:FeedItem
+                                uid="valueAxis"
+                                type="Measure"
+                                values="Total" />
+
+                            <viz.feeds:FeedItem
+                                uid="categoryAxis"
+                                type="Dimension"
+                                values="Pacote" />
+
+                        </viz:feeds>
+
+                    </viz:VizFrame>
+
+                </Panel>
+
+                <!-- FILTROS -->
+
+                <!-- FILTROS -->
+
+<Panel
+    headerText="Consulta de Logs"
+    class="sapUiMediumMarginBottom">
+
+    <VBox class="sapUiMediumMargin">
+
+        <HBox
+            width="100%"
+            justifyContent="SpaceBetween">
+
+            <VBox width="48%">
+
+                <Label text="Data Inicial" />
+
+                <DatePicker
+                    id="dtInicial"
+                    width="100%" />
+
+            </VBox>
+
+            <VBox width="48%">
+
+                <Label text="Data Final" />
+
+                <DatePicker
+                    id="dtFinal"
+                    width="100%" />
+
+            </VBox>
+
+        </HBox>
+
+        <HBox
+            width="100%"
+            justifyContent="SpaceBetween"
+            class="sapUiSmallMarginTop">
+
+            <VBox width="48%">
+
+                <Label text="Pacote" />
+
+<ComboBox
+    id="cmbPacote"
+    width="100%"
+    items="{pacotes>/pacotes}">
+
+    <core:Item
+        key="{pacotes>PACOTE}"
+        text="{pacotes>PACOTE}" />
+
+</ComboBox>
+
+            </VBox>
+
+            <VBox width="48%">
+
+                <Label text="IFlow" />
+
+                <Input
+                    id="inpIflow"
+                    width="100%"
+                    placeholder="Digite o IFlow" />
+
+            </VBox>
+
+        </HBox>
+
+        <HBox
+            width="100%"
+            justifyContent="End"
+            class="sapUiMediumMarginTop">
+
+<Button
+    text="Limpar"
+    press=".onLimpar"
+    class="sapUiTinyMarginEnd" />
+
+<Button
+    text="Pesquisar"
+    type="Emphasized"
+    press=".onPesquisar" />
+
+        </HBox>
+
+    </VBox>
+
+</Panel>
+
+                <!-- RESULTADO -->
+
+                <Panel id="pnlResultado" headerText="Resultado">
+
+    <Table
+        id="tblResultado"
+        items="{logs>/logs}">
+
+        <columns>
+            <Column>
+                <Text text="ID" />
+            </Column>
+            <Column>
+                <Text text="Pacote" />
+            </Column>
+
+            <Column>
+                <Text text="IFlow" />
+            </Column>
+
+            <Column>
+                <Text text="Data" />
+            </Column>
+
+            <Column>
+                <Text text="Erro" />
+            </Column>
+
+            <Column>
+                <Text text="Payload" />
+            </Column>
+
+        </columns>
+
+        <items>
+
+            <ColumnListItem>
+
+                <cells>
+                    <Text text="{logs>ID}" />
+
+                    <Text text="{logs>PACOTE}" />
+
+                    <Text text="{logs>IFLOW}" />
+
+                    <Text text="{ path: 'logs>DATE',
+                                  formatter: '.formatDate' }" />
+
+<Text text="{logs>ERROLOG}" />
+
+<HBox>
+
+    <Button
+        text="📥 Download"
+        type="Transparent"
+        visible="{
+            path: 'logs>PAYLOAD',
+            formatter: '.hasPayload'
+        }"
+        press=".onDownloadPayload" />
+
+    <Text
+        text="-"
+        visible="{
+            path: 'logs>PAYLOAD',
+            formatter: '.hasNoPayload'
+        }" />
+
+                </HBox>
+                </cells>
+
+            </ColumnListItem>
+
+        </items>
+
+    </Table>
+
+</Panel>
+            </VBox>
+
+        </content>
+
+    </Page>
+
+</mvc:View>

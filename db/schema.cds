@@ -1,7 +1,4 @@
 namespace monitor;
-
-@cds.persistence.exists
-@cds.persistence.name : 'LOGINTEGRACOES_CPI_IFLOW'
 entity Logs {
     key ID      : UUID;
     key PACOTE  : String;
@@ -11,8 +8,6 @@ entity Logs {
         PAYLOAD : String;
 }
 
-@cds.persistence.exists
-@cds.persistence.name : 'USUARIO_PACOTE'
 entity UsuarioPacote {
 
     key USERID : String(255);

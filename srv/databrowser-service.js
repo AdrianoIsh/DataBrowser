@@ -10,7 +10,7 @@ srv.on('READ', 'Logs', async () => {
 
     const pacotes = await db.run(`
         SELECT PACOTE
-        FROM USUARIO_PACOTE
+        FROM MONITOR_USUARIOPACOTE
         WHERE USERID = '${userId}'
     `);
 
@@ -24,7 +24,7 @@ srv.on('READ', 'Logs', async () => {
 
     return await db.run(`
         SELECT *
-        FROM LOGINTEGRACOES_CPI_IFLOW
+        FROM MONITOR_LOGS
         WHERE PACOTE IN (${listaPacotes})
         ORDER BY DATE DESC
     `);
@@ -37,7 +37,7 @@ srv.on('READ', 'Logs', async () => {
 
         return await db.run(`
             SELECT *
-            FROM USUARIO_PACOTE
+            FROM MONITOR_USUARIOPACOTE
         `);
 
     });
@@ -50,7 +50,7 @@ srv.on('READ', 'Logs', async () => {
 
         const pacotes = await db.run(`
             SELECT PACOTE
-            FROM USUARIO_PACOTE
+            FROM MONITOR_USUARIOPACOTE
             WHERE USERID = '${userId}'
         `);
 
@@ -68,19 +68,19 @@ srv.on('READ', 'Logs', async () => {
 
         const totalErros = await db.run(`
             SELECT COUNT(*) TOTAL
-            FROM LOGINTEGRACOES_CPI_IFLOW
+            FROM MONITOR_LOGS
             WHERE PACOTE IN (${listaPacotes})
         `);
 
         const totalPacotes = await db.run(`
             SELECT COUNT(DISTINCT PACOTE) TOTAL
-            FROM LOGINTEGRACOES_CPI_IFLOW
+            FROM MONITOR_LOGS
             WHERE PACOTE IN (${listaPacotes})
         `);
 
         const totalIflows = await db.run(`
             SELECT COUNT(DISTINCT IFLOW) TOTAL
-            FROM LOGINTEGRACOES_CPI_IFLOW
+            FROM MONITOR_LOGS
             WHERE PACOTE IN (${listaPacotes})
         `);
 
@@ -100,7 +100,7 @@ srv.on('READ', 'Logs', async () => {
 
         const pacotes = await db.run(`
             SELECT PACOTE
-            FROM USUARIO_PACOTE
+            FROM MONITOR_USUARIOPACOTE
             WHERE USERID = '${userId}'
         `);
 
@@ -116,7 +116,7 @@ srv.on('READ', 'Logs', async () => {
             SELECT
                 PACOTE,
                 COUNT(*) AS TOTAL
-            FROM LOGINTEGRACOES_CPI_IFLOW
+            FROM MONITOR_LOGS
             WHERE PACOTE IN (${listaPacotes})
             GROUP BY PACOTE
             ORDER BY TOTAL DESC
@@ -137,7 +137,7 @@ srv.on('READ', 'Logs', async () => {
 
         const pacotes = await db.run(`
             SELECT PACOTE
-            FROM USUARIO_PACOTE
+            FROM MONITOR_USUARIOPACOTE
             WHERE USERID = '${userId}'
         `);
 
@@ -155,7 +155,7 @@ srv.on('READ', 'Logs', async () => {
                 IFLOW,
                 DATE,
                 ERROLOG
-            FROM LOGINTEGRACOES_CPI_IFLOW
+            FROM MONITOR_LOGS
             WHERE PACOTE IN (${listaPacotes})
             ORDER BY DATE DESC
         `);

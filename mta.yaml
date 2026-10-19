@@ -54,3 +54,5 @@ resources:
     parameters:
       service: hana
       service-plan: hdi-shared
+      config:
+        schema: MONITOR_HDI

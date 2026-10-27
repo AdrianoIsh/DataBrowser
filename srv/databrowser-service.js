@@ -2,11 +2,23 @@ import cds from '@sap/cds';
 
 export default (srv) => {
 
-srv.on('READ', 'Logs', async () => {
+    srv.on('getTileInfo', async () => {
 
-    const db = await cds.connect.to('db');
+    const dashboard = await srv.send('getDashboard');
+    
+return {
+    number: dashboard.totalErros,
+    info: `erros em ${dashboard.totalIflows} integrações`,
+    state: dashboard.totalErros > 0 ? 'Error' : 'Success'
+};
 
-    const userId = 'adriano.ishibara@hotmail.com';
+});
+
+srv.on('READ', 'Logs', async (req) => {
+
+    const db = await cds.connect.to('db');  
+
+    const userId = req.user.id;      
 
     const pacotes = await db.run(`
         SELECT PACOTE
@@ -22,12 +34,22 @@ srv.on('READ', 'Logs', async () => {
         .map(p => `'${p.PACOTE}'`)
         .join(',');
 
-    return await db.run(`
+    const logs = await db.run(`
         SELECT *
         FROM MONITOR_LOGS
         WHERE PACOTE IN (${listaPacotes})
         ORDER BY DATE DESC
     `);
+
+    return logs.map(log => ({
+        ...log,
+        PAYLOAD: Buffer.isBuffer(log.PAYLOAD)
+            ? log.PAYLOAD.toString('utf8')
+            : log.PAYLOAD,
+        ERROLOG: Buffer.isBuffer(log.ERROLOG)
+            ? log.ERROLOG.toString('utf8')
+            : log.ERROLOG
+    }));
 
 });
 
@@ -42,11 +64,11 @@ srv.on('READ', 'Logs', async () => {
 
     });
 
-    srv.on('getDashboard', async () => {
+    srv.on('getDashboard', async (req) => {
 
         const db = await cds.connect.to('db');
 
-        const userId = 'adriano.ishibara@hotmail.com';
+        const userId = req.user.id;
 
         const pacotes = await db.run(`
             SELECT PACOTE
@@ -69,19 +91,19 @@ srv.on('READ', 'Logs', async () => {
         const totalErros = await db.run(`
             SELECT COUNT(*) TOTAL
             FROM MONITOR_LOGS
-            WHERE PACOTE IN (${listaPacotes})
+            WHERE UPPER("PACOTE") IN (${listaPacotes})
         `);
 
         const totalPacotes = await db.run(`
             SELECT COUNT(DISTINCT PACOTE) TOTAL
             FROM MONITOR_LOGS
-            WHERE PACOTE IN (${listaPacotes})
+            WHERE UPPER("PACOTE") IN (${listaPacotes})
         `);
 
         const totalIflows = await db.run(`
             SELECT COUNT(DISTINCT IFLOW) TOTAL
             FROM MONITOR_LOGS
-            WHERE PACOTE IN (${listaPacotes})
+            WHERE UPPER("PACOTE") IN (${listaPacotes})
         `);
 
         return {
@@ -92,11 +114,11 @@ srv.on('READ', 'Logs', async () => {
 
     });
 
-    srv.on('getErrosPorPacote', async () => {
+    srv.on('getErrosPorPacote', async (req) => {
 
         const db = await cds.connect.to('db');
 
-        const userId = 'adriano.ishibara@hotmail.com';
+        const userId = req.user.id;
 
         const pacotes = await db.run(`
             SELECT PACOTE
@@ -117,7 +139,7 @@ srv.on('READ', 'Logs', async () => {
                 PACOTE,
                 COUNT(*) AS TOTAL
             FROM MONITOR_LOGS
-            WHERE PACOTE IN (${listaPacotes})
+            WHERE UPPER("PACOTE") IN (${listaPacotes})
             GROUP BY PACOTE
             ORDER BY TOTAL DESC
         `);
@@ -129,11 +151,11 @@ srv.on('READ', 'Logs', async () => {
 
     });
 
-    srv.on('getUltimosErros', async () => {
+    srv.on('getUltimosErros', async (req) => {
 
         const db = await cds.connect.to('db');
 
-        const userId = 'adriano.ishibara@hotmail.com';
+        const userId = req.user.id;
 
         const pacotes = await db.run(`
             SELECT PACOTE
@@ -156,7 +178,7 @@ srv.on('READ', 'Logs', async () => {
                 DATE,
                 ERROLOG
             FROM MONITOR_LOGS
-            WHERE PACOTE IN (${listaPacotes})
+            WHERE UPPER("PACOTE") IN (${listaPacotes})
             ORDER BY DATE DESC
         `);
 

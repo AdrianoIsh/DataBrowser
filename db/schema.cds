@@ -5,7 +5,7 @@ entity Logs {
     key IFLOW   : String;
     key DATE    : Timestamp;
         ERROLOG : String;
-        PAYLOAD : String;
+        PAYLOAD : Map;
 }
 
 entity UsuarioPacote {

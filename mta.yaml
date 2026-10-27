@@ -4,6 +4,7 @@ version: 1.0.0
 description: "A simple CAP project."
 parameters:
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
 build-parameters:
   before-all:
     - builder: custom
@@ -26,6 +27,7 @@ modules:
     requires:
       - name: DataBrowser-auth
       - name: DataBrowser-db
+      - name: DataBrowser-destination
 
   - name: DataBrowser-db-deployer
     type: hdb
@@ -34,6 +36,79 @@ modules:
       buildpack: nodejs_buildpack
     requires:
       - name: DataBrowser-db
+
+  - name: DataBrowser-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: DataBrowser-auth
+      - name: srv-api
+      - name: DataBrowser-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: DataBrowserproject1
+          artifacts:
+            - project1.zip
+          target-path: app/
+          config:
+            HTML5Runtime_enabled: true
+    parameters:
+      config:
+        destinations:
+          - Name: srv-api
+            URL: ~{srv-api/srv-url}
+            Authentication: NoAuthentication
+            Type: HTTP
+            ProxyType: Internet
+            ForwardAuthToken: true
+            DynamicDestination: true
+
+  - name: DataBrowserproject1
+    type: html5
+    path: app/project1
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+
+  - name: DataBrowser-destinations
+    type: com.sap.application.content
+    requires:
+      - name: DataBrowser-auth
+        parameters:
+          service-key:
+            name: DataBrowser-auth-key
+      - name: DataBrowser-html5-repo-host
+        parameters:
+          service-key:
+            name: DataBrowser-html5-repo-host-key
+      - name: srv-api
+      - name: DataBrowser-destination
+        parameters:
+          content-target: true
+    build-parameters:
+      no-source: true
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: DataBrowser-html5-repository
+              ServiceInstanceName: DataBrowser-html5-repo-host
+              ServiceKeyName: DataBrowser-html5-repo-host-key
+              sap.cloud.service: DataBrowser.service
+            - Name: DataBrowser-auth
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: DataBrowser-auth
+              ServiceKeyName: DataBrowser-auth-key
+              sap.cloud.service: DataBrowser.service
 
 resources:
   - name: DataBrowser-auth
@@ -56,3 +131,16 @@ resources:
       service-plan: hdi-shared
       config:
         schema: MONITOR_HDI
+
+  - name: DataBrowser-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: DataBrowser-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+    requires:
+      - name: srv-api

@@ -16,22 +16,85 @@ sap.ui.define([
 
         },
 
+        _get: async function (sPath) {
+
+            const response = await fetch(
+                sap.ui.require.toUrl("project1/odata/v4/monitor/" + sPath),
+                {
+                    method: "GET",
+                    cache: "no-store",
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+            const text = await response.text();
+
+            if (!response.ok) {
+                throw new Error(
+                    sPath + " falhou: " + response.status + " " + text.slice(0, 300)
+                );
+            }
+
+            return JSON.parse(text);
+
+        },
+
+        _getCsrfToken: async function () {
+
+            if (this._csrfToken) {
+                return this._csrfToken;
+            }
+
+            const response = await fetch(
+                sap.ui.require.toUrl("project1/odata/v4/monitor") + "/",
+                {
+                    method: "GET",
+                    headers: {
+                        "X-CSRF-Token": "Fetch"
+                    }
+                }
+            );
+
+            this._csrfToken = response.headers.get("X-CSRF-Token");
+
+            return this._csrfToken;
+
+        },
+
+        _post: async function (sAction, oBody) {
+
+            const token = await this._getCsrfToken();
+
+            const response = await fetch(
+                sap.ui.require.toUrl("project1/odata/v4/monitor/" + sAction),
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-Token": token
+                    },
+                    body: JSON.stringify(oBody || {})
+                }
+            );
+
+            const text = await response.text();
+
+            if (!response.ok) {
+                throw new Error(
+                    sAction + " falhou: " + response.status + " " + text.slice(0, 300)
+                );
+            }
+
+            return JSON.parse(text);
+
+        },
         _loadDashboard: async function () {
 
             try {
 
-                const response = await fetch(
-                    "/odata/v4/monitor/getDashboard",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: "{}"
-                    }
-                );
-
-                const data = await response.json();
+                const data = await this._get("getDashboard", {});
 
                 const oModel = new JSONModel(data);
 
@@ -56,18 +119,7 @@ sap.ui.define([
 
             try {
 
-                const response = await fetch(
-                    "/odata/v4/monitor/getErrosPorPacote",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: "{}"
-                    }
-                );
-
-                const data = await response.json();
+                  const data = await this._get("getErrosPorPacote()");
 
                 const oChartModel = new JSONModel({
                     data: data.value
@@ -131,7 +183,7 @@ sap.ui.define([
             try {
 
                 const response = await fetch(
-                    "/odata/v4/monitor/UsuarioPacote"
+                    sap.ui.require.toUrl("project1/odata/v4/monitor/UsuarioPacote")
                 );
 
                 const data = await response.json();
@@ -276,44 +328,28 @@ sap.ui.define([
             );
 
         },
-        showDownloadButton: function (sPayload) {
-
-            return !!(
-                sPayload &&
-                sPayload.trim()
-            );
-
+                showDownloadButton: function (sPayload) {
+            return typeof sPayload === "string" && sPayload.trim().length > 0;
         },
+
         hasPayload: function (sPayload) {
-
-            return !!(
-                sPayload &&
-                sPayload.trim()
-            );
-
-        },
-        hasPayload: function (sPayload) {
-
-            return !!(
-                sPayload &&
-                sPayload.trim()
-            );
-
+            return typeof sPayload === "string" && sPayload.trim().length > 0;
         },
 
         hasNoPayload: function (sPayload) {
-
-            return !(
-                sPayload &&
-                sPayload.trim()
-            );
-
+            return !(typeof sPayload === "string" && sPayload.trim().length > 0);
         },
         onDownloadPayload: function (oEvent) {
 
             const oContext = oEvent.getSource().getBindingContext("logs");
 
-            const payload = oContext.getProperty("PAYLOAD");
+            let payload = oContext.getProperty("PAYLOAD");
+
+            if (payload && payload.type === "Buffer") {
+                payload = new TextDecoder("utf-8").decode(
+                    new Uint8Array(payload.data)
+                );
+            }
 
             if (!payload) {
                 MessageToast.show("Payload vazio");
@@ -388,7 +424,7 @@ sap.ui.define([
             try {
 
                 const response = await fetch(
-                    "/odata/v4/monitor/Logs"
+                    sap.ui.require.toUrl("project1/odata/v4/monitor/Logs")
                 );
 
                 const data = await response.json();

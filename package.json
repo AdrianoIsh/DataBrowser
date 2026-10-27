@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@cap-js/sqlite": "^3",
-    "@sap/cds-dk": "^10.1.0"
+    "@sap/cds-dk": "^10.2.0"
   },
   "scripts": {
     "start": "cds-serve"
@@ -19,7 +19,10 @@
     "requires": {
       "[production]": {
         "auth": "xsuaa"
-      }
+      },
+      "html5-repo": true,
+      "destinations": true,
+      "workzone": true
     }
   }
 }

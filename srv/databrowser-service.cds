@@ -17,6 +17,12 @@ type UltimoErro {
     date    : Timestamp;
     errolog : String;
 }
+type TileInfo {
+    number     : Integer;
+    title      : String;
+    info       : String;
+    state      : String;
+}
 
 service MonitorService {
 
@@ -26,13 +32,15 @@ service MonitorService {
     @readonly
     entity UsuarioPacote as projection on monitor.UsuarioPacote;
 
-    action getDashboard()
+    function getDashboard()
         returns Dashboard;
 
-    action getErrosPorPacote()
+    function getErrosPorPacote()
         returns array of PacoteErro;
 
-    action getUltimosErros()
+    function getUltimosErros()
         returns array of UltimoErro;
 
+function getTileInfo()
+    returns TileInfo;
 }

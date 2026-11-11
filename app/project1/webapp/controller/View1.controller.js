@@ -9,13 +9,72 @@ sap.ui.define([
 
         onInit: function () {
 
+            this._setDefaultDates();
             this._loadDashboard();
-            this._loadChart();
+            //this._loadChart();
             this._loadPacotes();
             this._loadLogs();
 
         },
+        _setDefaultDates: function () {
 
+            const oHoje = new Date();
+
+            const oSeteDiasAtras = new Date();
+            oSeteDiasAtras.setDate(oHoje.getDate() - 7);
+
+            this.byId("dtInicial").setDateValue(oSeteDiasAtras);
+            this.byId("dtFinal").setDateValue(oHoje);
+
+        },
+        _atualizarGrafico: function (logs) {
+
+            console.log("LOGS GRAFICO", logs);
+
+            const totais = {};
+
+            logs.forEach(log => {
+
+                const pacote = log.PACOTE_DESC;
+
+                totais[pacote] = (totais[pacote] || 0) + 1;
+
+            });
+
+            console.log("TOTAIS", totais);
+
+            const data = Object.keys(totais).map(pacote => ({
+                pacote,
+                total: totais[pacote]
+            }));
+
+            console.log("DATA GRAFICO", data);
+
+            this.getView().setModel(
+                new JSONModel({ data }),
+                "chart"
+            );
+            const oVizFrame = this.byId("idVizFrame");
+
+            oVizFrame.setVizProperties({
+                title: {
+                    visible: false
+                },
+                legend: {
+                    visible: true,
+                    title: {
+                        visible: true,
+                        text: "Pacotes:"
+                    }
+                },
+                plotArea: {
+                    dataLabel: {
+                        visible: true,
+                        type: "percentage"
+                    }
+                }
+            });
+        },
         _get: async function (sPath) {
 
             const response = await fetch(
@@ -114,12 +173,12 @@ sap.ui.define([
             }
 
         },
-
+/*
         _loadChart: async function () {
 
             try {
 
-                  const data = await this._get("getErrosPorPacote()");
+                const data = await this._get("getErrosPorPacote()");
 
                 const oChartModel = new JSONModel({
                     data: data.value
@@ -137,19 +196,30 @@ sap.ui.define([
                     oVizFrame.setVizProperties({
 
                         title: {
-                            visible: false
+                            visible: false,
+                            text: "Título"
                         },
 
                         legend: {
-                            visible: false
+                            visible: true,
+                            title: {
+                                visible: true,
+                                text: "Pacotes"
+                            }
                         },
 
                         plotArea: {
                             dataLabel: {
-                                visible: true
+                                visible: true,
+                                type: "percentage"
                             }
                         },
 
+                        interaction: {
+                            selectability: {
+                                mode: "single"
+                            }
+                        },
                         categoryAxis: {
                             title: {
                                 visible: false
@@ -176,7 +246,7 @@ sap.ui.define([
 
             }
 
-        },
+        },*/
 
         _loadPacotes: async function () {
 
@@ -297,6 +367,9 @@ sap.ui.define([
                 oModel,
                 "logs"
             );
+
+            this._atualizarGrafico(resultado);
+
             this.byId("pnlResultado")
                 .setHeaderText(
                     `Resultado (${resultado.length} registros)`
@@ -328,7 +401,7 @@ sap.ui.define([
             );
 
         },
-                showDownloadButton: function (sPayload) {
+        showDownloadButton: function (sPayload) {
             return typeof sPayload === "string" && sPayload.trim().length > 0;
         },
 
@@ -419,6 +492,13 @@ sap.ui.define([
                 );
 
         },
+        hasErroLog: function (sErroLog) {
+            return !!(sErroLog && sErroLog.trim());
+        },
+
+        hasLaudoIA: function (sLaudoIA) {
+            return !!(sLaudoIA && sLaudoIA.trim());
+        },
         _loadLogs: async function () {
 
             try {
@@ -432,6 +512,7 @@ sap.ui.define([
                 this._allLogs = data.value.sort(
                     (a, b) => new Date(b.DATE) - new Date(a.DATE)
                 );
+
                 const oModel = new JSONModel({
                     logs: this._allLogs
                 });
@@ -440,10 +521,13 @@ sap.ui.define([
                     oModel,
                     "logs"
                 );
+
                 this.byId("pnlResultado")
                     .setHeaderText(
                         `Resultado (${this._allLogs.length} registros)`
                     );
+
+                this.onPesquisar();
 
             } catch (error) {
 
@@ -455,7 +539,7 @@ sap.ui.define([
 
             }
 
-        }
+        },
 
     });
 

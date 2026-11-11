@@ -8,6 +8,7 @@ type Dashboard {
 
 type PacoteErro {
     pacote : String;
+    pacote_desc : String;
     total  : Integer;
 }
 

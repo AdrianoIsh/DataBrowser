@@ -78,18 +78,16 @@ modules:
         - Name: DataBrowser-html5-repository
           ServiceInstanceName: DataBrowser-html5-repo-host
           ServiceKeyName: DataBrowser-html5-repo-host-key
-          sap.cloud.service: DataBrowser.service
+          sap.cloud.service: DataBrowser.v2
         - Authentication: OAuth2UserTokenExchange
           Name: DataBrowser-auth
           ServiceInstanceName: DataBrowser-auth
           ServiceKeyName: DataBrowser-auth-key
-          sap.cloud.service: DataBrowser.service
         - Authentication: OAuth2UserTokenExchange
           Name: srv-api
           TokenServiceInstanceName: DataBrowser-auth
           TokenServiceKeyName: DataBrowser-auth-key
           URL: ~{srv-api/srv-url}
-          sap.cloud.service: DataBrowser.service
         existing_destinations_policy: update
   build-parameters:
     no-source: true
@@ -141,7 +139,7 @@ resources:
             Name: ui5
             ProxyType: Internet
             Type: HTTP
-            URL: https://ui5.sap.com
+            URL: https://sap.com
           existing_destinations_policy: update
     service: destination
     service-plan: lite

@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="project1.controller.Dashboard"
+    controllerName="com.databrowser.monitor.project1.controller.Dashboard"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
 

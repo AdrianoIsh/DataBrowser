@@ -1,7 +1,7 @@
 {
   "_version": "1.89.0",
   "sap.app": {
-    "id": "project1",
+    "id": "com.databrowser.monitor.project1",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -15,15 +15,15 @@
       "version": "1.32.0",
       "toolsId": "f606da0c-8626-4046-b064-7d63fdd53e9d"
     },
-      "dataSources": {
-    "mainService": {
-      "uri": "odata/v4/monitor/",
-      "type": "OData",
-      "settings": {
-        "odataVersion": "4.0"
+    "dataSources": {
+      "mainService": {
+        "uri": "odata/v4/monitor/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
       }
-    }
-  },
+    },
     "crossNavigation": {
       "inbounds": {
         "project1-display": {
@@ -36,17 +36,15 @@
             "parameters": {},
             "additionalParameters": "allowed"
           },
-                  "indicatorDataSource": {
-          "dataSource": "mainService",
-          "path": "getTileInfo()",
-          "refresh": 300
-        }
-          
+          "indicatorDataSource": {
+            "dataSource": "mainService",
+            "path": "getTileInfo()",
+            "refresh": 300
+          }
         }
       }
     }
   },
-  
   "sap.ui": {
     "technology": "UI5",
     "icons": {
@@ -81,7 +79,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "project1.i18n.i18n"
+          "bundleName": "com.databrowser.monitor.project1.i18n.i18n"
         }
       }
     },
@@ -100,9 +98,9 @@
         "transition": "slide",
         "type": "View",
         "viewType": "XML",
-        "path": "project1.view",
+        "path": "com.databrowser.monitor.project1.view",
         "async": true,
-        "viewPath": "project1.view"
+        "viewPath": "com.databrowser.monitor.project1.view"
       },
       "routes": [
         {
@@ -121,7 +119,7 @@
       }
     },
     "rootView": {
-      "viewName": "project1.view.App",
+      "viewName": "com.databrowser.monitor.project1.view.App",
       "type": "XML",
       "id": "App",
       "async": true

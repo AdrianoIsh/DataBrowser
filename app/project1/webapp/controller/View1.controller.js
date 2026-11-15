@@ -5,13 +5,13 @@ sap.ui.define([
 ], function (Controller, JSONModel, MessageToast) {
     "use strict";
 
-    return Controller.extend("project1.controller.View1", {
+    return Controller.extend("com.databrowser.monitor.project1.controller.View1", {
+
 
         onInit: function () {
 
             this._setDefaultDates();
             this._loadDashboard();
-            //this._loadChart();
             this._loadPacotes();
             this._loadLogs();
 
@@ -78,7 +78,7 @@ sap.ui.define([
         _get: async function (sPath) {
 
             const response = await fetch(
-                sap.ui.require.toUrl("project1/odata/v4/monitor/" + sPath),
+                sap.ui.require.toUrl("com/databrowser/monitor/project1/odata/v4/monitor/" + sPath),
                 {
                     method: "GET",
                     cache: "no-store",
@@ -107,7 +107,7 @@ sap.ui.define([
             }
 
             const response = await fetch(
-                sap.ui.require.toUrl("project1/odata/v4/monitor") + "/",
+                sap.ui.require.toUrl("com/databrowser/monitor/project1/odata/v4/monitor") + "/",
                 {
                     method: "GET",
                     headers: {
@@ -127,7 +127,7 @@ sap.ui.define([
             const token = await this._getCsrfToken();
 
             const response = await fetch(
-                sap.ui.require.toUrl("project1/odata/v4/monitor/" + sAction),
+                sap.ui.require.toUrl("com/databrowser/monitor/project1/odata/v4/monitor/" + sAction),
                 {
                     method: "POST",
                     headers: {
@@ -173,87 +173,13 @@ sap.ui.define([
             }
 
         },
-/*
-        _loadChart: async function () {
-
-            try {
-
-                const data = await this._get("getErrosPorPacote()");
-
-                const oChartModel = new JSONModel({
-                    data: data.value
-                });
-
-                this.getView().setModel(
-                    oChartModel,
-                    "chart"
-                );
-
-                const oVizFrame = this.byId("idVizFrame");
-
-                if (oVizFrame) {
-
-                    oVizFrame.setVizProperties({
-
-                        title: {
-                            visible: false,
-                            text: "Título"
-                        },
-
-                        legend: {
-                            visible: true,
-                            title: {
-                                visible: true,
-                                text: "Pacotes"
-                            }
-                        },
-
-                        plotArea: {
-                            dataLabel: {
-                                visible: true,
-                                type: "percentage"
-                            }
-                        },
-
-                        interaction: {
-                            selectability: {
-                                mode: "single"
-                            }
-                        },
-                        categoryAxis: {
-                            title: {
-                                visible: false
-                            }
-                        },
-
-                        valueAxis: {
-                            title: {
-                                visible: false
-                            }
-                        }
-
-                    });
-
-                }
-
-            } catch (error) {
-
-                console.error(error);
-
-                MessageToast.show(
-                    "Erro ao carregar gráfico"
-                );
-
-            }
-
-        },*/
 
         _loadPacotes: async function () {
 
             try {
 
                 const response = await fetch(
-                    sap.ui.require.toUrl("project1/odata/v4/monitor/UsuarioPacote")
+                    sap.ui.require.toUrl("com/databrowser/monitor/project1/odata/v4/monitor/UsuarioPacote")
                 );
 
                 const data = await response.json();
@@ -504,7 +430,7 @@ sap.ui.define([
             try {
 
                 const response = await fetch(
-                    sap.ui.require.toUrl("project1/odata/v4/monitor/Logs")
+                    sap.ui.require.toUrl("com/databrowser/monitor/project1/odata/v4/monitor/Logs")
                 );
 
                 const data = await response.json();

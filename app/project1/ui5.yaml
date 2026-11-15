@@ -3,7 +3,7 @@
 specVersion: "4.0"
 
 metadata:
-  name: project1
+  name: com.databrowser.monitor.project1
 
 type: application
 
@@ -48,7 +48,7 @@ builder:
     - name: ui5-task-zipper
       afterTask: generateVersionInfo
       configuration:
-        archiveName: project1
+        archiveName: comdatabrowsermonitorproject1
         relativePaths: true
         additionalFiles:
           - xs-app.json

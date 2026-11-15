@@ -4,77 +4,75 @@ sap.ui.define([
 ], function (Controller, JSONModel) {
     "use strict";
 
-    return Controller.extend(
-        "project1.controller.Dashboard",
-        {
+    return Controller.extend("com.databrowser.monitor.project1.controller.Dashboard", {
 
-            onInit: function () {
+        onInit: function () {
 
-                this._loadDashboard();
-                this._loadUltimosErros();
+            this._loadDashboard();
+            this._loadUltimosErros();
 
-            },
+        },
 
-            _loadDashboard: async function () {
+        _loadDashboard: async function () {
 
-                const response = await fetch(
-                    "/odata/v4/monitor/getDashboard",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body: "{}"
-                    }
-                );
+            const response = await fetch(
+                "/odata/v4/monitor/getDashboard",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: "{}"
+                }
+            );
 
-                const data =
-                    await response.json();
+            const data =
+                await response.json();
 
-                const oModel =
-                    new JSONModel(data);
+            const oModel =
+                new JSONModel(data);
 
-                this.getView().setModel(
-                    oModel,
-                    "dashboard"
-                );
+            this.getView().setModel(
+                oModel,
+                "dashboard"
+            );
 
-            },
-            _loadUltimosErros: async function () {
+        },
+        _loadUltimosErros: async function () {
 
-                const response = await fetch(
-                    "/odata/v4/monitor/getUltimosErros",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: "{}"
-                    }
-                );
+            const response = await fetch(
+                "/odata/v4/monitor/getUltimosErros",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: "{}"
+                }
+            );
 
-                const data = await response.json();
+            const data = await response.json();
 
-                const oModel = new JSONModel({
-                    erros: data.value
-                });
+            const oModel = new JSONModel({
+                erros: data.value
+            });
 
-                this.getView().setModel(
-                    oModel,
-                    "ultimos"
-                );
+            this.getView().setModel(
+                oModel,
+                "ultimos"
+            );
 
-            },
-            onAbrirMonitor: function () {
+        },
+        onAbrirMonitor: function () {
 
-                this.getOwnerComponent()
-                    .getRouter()
-                    .navTo("monitor");
-
-            }
+            this.getOwnerComponent()
+                .getRouter()
+                .navTo("monitor");
 
         }
+
+    }
     );
 
 });
